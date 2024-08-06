@@ -29,6 +29,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Poll::class);
     }
 
+    public function answers()
+    {
+        return $this->belongsToMany(Option::class, 'option_users', 'user_id', 'option_id');
+    }
+
 
     /////////////////////////////////////////////////////////////
     public function getJWTIdentifier()

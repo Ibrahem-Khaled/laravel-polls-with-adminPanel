@@ -15,4 +15,9 @@ class Option extends Model
     {
         return $this->belongsTo(Question::class);
     }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'option_users', 'option_id', 'user_id');
+    }
 }
