@@ -79,6 +79,7 @@ class PollsController extends Controller
             $userAnswer = $userAnswers->firstWhere('option_id', $question->options->pluck('id')->toArray());
 
             return [
+                'id' => $question->id,
                 'question' => $question->question,
                 'description' => $question->description,
                 'options' => $question->options->map(function ($option) use ($userAnswer) {

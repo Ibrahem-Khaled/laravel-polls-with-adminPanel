@@ -40,8 +40,7 @@
                                 </ul>
                             </td>
                             <td>
-                                <a href="{{ route('questions.options.index', [$poll->id, $question->id]) }}"
-                                    class="btn btn-info">
+                                <a href="{{ route('questions.options.index', $question->id) }}" class="btn btn-info">
                                     Manage Options
                                 </a>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal"
