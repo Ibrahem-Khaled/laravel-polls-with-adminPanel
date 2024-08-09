@@ -26,7 +26,8 @@ Route::group([], function () {
 
     //this route user
     Route::resource('users', UserController::class);
-
+    Route::get('users/bleow/limit', [UserController::class, 'userBleowLimit'])->name('userBleowLimit');
+    
     //this route poll
     Route::resource('polls', PollController::class);
 

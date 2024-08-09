@@ -69,9 +69,8 @@ class SlideShowController extends Controller
 
     public function destroy(SlideShow $slideShow)
     {
-        Storage::disk('public')->delete($slideShow->image);
+        //Storage::disk('public')->delete($slideShow->image);
         $slideShow->delete();
-
         return redirect()->back()->with('success', 'Slide deleted successfully.');
     }
 

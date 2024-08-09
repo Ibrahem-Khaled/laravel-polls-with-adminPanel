@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('phone')->unique();
             $table->string('email')->unique()->nullable();
-            $table->float('balance')->default(0.00);
+            $table->float('balance')->default(0);
             $table->string('password');
             $table->text('image')->nullable();
             $table->text('identity')->nullable();

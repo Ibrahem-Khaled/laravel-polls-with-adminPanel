@@ -5,9 +5,9 @@
 @section('content')
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Options for Question: {{ $question->question }}</h3>
+            <h3>الخيارات للسؤال: {{ $question->question }}</h3>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOptionModal">
-                Add Option
+                إضافة خيار
             </button>
         </div>
 
@@ -21,8 +21,8 @@
             <table class="table table-striped">
                 <thead class="bg-primary text-white">
                     <tr>
-                        <th>Option</th>
-                        <th>Actions</th>
+                        <th>الخيار</th>
+                        <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,26 +32,26 @@
                             <td>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#editOptionModal{{ $option->id }}">
-                                    Edit
+                                    تعديل
                                 </button>
                                 <form action="{{ route('questions.options.destroy', [$question->id, $option->id]) }}"
                                     method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger">حذف</button>
                                 </form>
                             </td>
                         </tr>
 
-                        <!-- Edit Option Modal -->
+                        <!-- تعديل خيار Modal -->
                         <div class="modal fade" id="editOptionModal{{ $option->id }}" tabindex="-1"
                             aria-labelledby="editOptionModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editOptionModalLabel">Edit Option</h5>
+                                        <h5 class="modal-title" id="editOptionModalLabel">تعديل الخيار</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                            aria-label="إغلاق"></button>
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('questions.options.update', [$question->id, $option->id]) }}"
@@ -61,8 +61,8 @@
                                             @include('dashboard.options.form', ['option' => $option])
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    data-bs-dismiss="modal">إغلاق</button>
+                                                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                                             </div>
                                         </form>
                                     </div>
@@ -78,21 +78,21 @@
         </div>
     </div>
 
-    <!-- Add Option Modal -->
+    <!-- إضافة خيار Modal -->
     <div class="modal fade" id="addOptionModal" tabindex="-1" aria-labelledby="addOptionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addOptionModalLabel">Add Option</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="addOptionModalLabel">إضافة خيار</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('questions.options.store', $question->id) }}" method="POST">
                         @csrf
                         @include('dashboard.options.form', ['option' => new App\Models\Option()])
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                         </div>
                     </form>
                 </div>

@@ -3,9 +3,9 @@
 @section('content')
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Questions for Poll: {{ $poll->title }}</h3>
+            <h3>الأسئلة لاستطلاع الرأي: {{ $poll->title }}</h3>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
-                Add Question
+                إضافة سؤال
             </button>
         </div>
 
@@ -19,11 +19,11 @@
             <table class="table table-striped">
                 <thead class="bg-primary text-white">
                     <tr>
-                        <th>Question</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Options</th>
-                        <th>Actions</th>
+                        <th>السؤال</th>
+                        <th>الوصف</th>
+                        <th>الحالة</th>
+                        <th>الخيارات</th>
+                        <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,30 +41,30 @@
                             </td>
                             <td>
                                 <a href="{{ route('questions.options.index', $question->id) }}" class="btn btn-info">
-                                    Manage Options
+                                    إدارة الخيارات
                                 </a>
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#editQuestionModal{{ $question->id }}">
-                                    Edit
+                                    تعديل
                                 </button>
                                 <form action="{{ route('polls.questions.destroy', [$poll->id, $question->id]) }}"
                                     method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger">حذف</button>
                                 </form>
                             </td>
                         </tr>
 
-                        <!-- Edit Question Modal -->
+                        <!-- تعديل سؤال Modal -->
                         <div class="modal fade" id="editQuestionModal{{ $question->id }}" tabindex="-1"
                             aria-labelledby="editQuestionModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="editQuestionModalLabel">Edit Question</h5>
+                                        <h5 class="modal-title" id="editQuestionModalLabel">تعديل السؤال</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                            aria-label="إغلاق"></button>
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('polls.questions.update', [$poll->id, $question->id]) }}"
@@ -74,8 +74,8 @@
                                             @include('dashboard.questions.form', ['question' => $question])
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                    data-bs-dismiss="modal">إغلاق</button>
+                                                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                                             </div>
                                         </form>
                                     </div>
@@ -91,21 +91,21 @@
         </div>
     </div>
 
-    <!-- Add Question Modal -->
+    <!-- إضافة سؤال Modal -->
     <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addQuestionModalLabel">Add Question</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="addQuestionModalLabel">إضافة سؤال</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('polls.questions.store', $poll->id) }}" method="POST">
                         @csrf
                         @include('dashboard.questions.form', ['question' => new App\Models\Question()])
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                         </div>
                     </form>
                 </div>

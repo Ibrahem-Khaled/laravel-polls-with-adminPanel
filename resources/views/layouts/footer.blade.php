@@ -8,25 +8,27 @@
                         <script>
                             document.write(new Date().getFullYear())
                         </script>
-                        , made with <i class="fa fa-heart text-danger"></i> by
-                        <span class="font-weight-bold">Ibrahim Khalid</span> - Software Developer.
+                        ، صُنع بحب <i class="fa fa-heart text-danger"></i> بواسطة
+                        <span class="font-weight-bold">شركة AppNest</span> - مطور برامج.
                     </p>
-                    <p class="mb-0 text-muted">Crafting solutions for a better web experience.</p>
+                    <p class="mb-0 text-muted">نصنع الحلول لتجربة ويب أفضل.</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <ul class="nav nav-footer justify-content-center justify-content-md-end">
                     <li class="nav-item">
-                        <a href="https://www.linkedin.com/in/ibrahim-khalid-b1a76223a" class="nav-link text-muted" target="_blank">LinkedIn</a>
+                        <a href="https://www.linkedin.com/in/ibrahim-khalid-b1a76223a" class="nav-link text-muted"
+                            target="_blank">لينكدإن</a>
                     </li>
                     <li class="nav-item">
-                        <a href="https://github.com/Ibrahem-Khaled" class="nav-link text-muted" target="_blank">GitHub</a>
+                        <a href="https://github.com/Ibrahem-Khaled" class="nav-link text-muted" target="_blank">جيت
+                            هاب</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/about" class="nav-link text-muted" target="_blank">About Me</a>
+                        <a href="/about" class="nav-link text-muted" target="_blank">عنّي</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/contact" class="nav-link text-muted pe-0" target="_blank">Contact</a>
+                        <a href="/contact" class="nav-link text-muted pe-0" target="_blank">تواصل</a>
                     </li>
                 </ul>
             </div>

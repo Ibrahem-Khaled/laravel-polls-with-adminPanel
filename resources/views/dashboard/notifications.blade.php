@@ -3,9 +3,9 @@
 @section('content')
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Notifications</h3>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNotificationModal">Create New
-                Notification</button>
+            <h3>الإشعارات</h3>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNotificationModal">إنشاء إشعار جديد
+            </button>
         </div>
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -13,11 +13,11 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>Body</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>الصورة</th>
+                    <th>العنوان</th>
+                    <th>المحتوى</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +28,7 @@
                                 <img src="{{ Storage::url($notification->image) }}" alt="{{ $notification->title }}"
                                     width="100">
                             @else
-                                <span>No Image</span>
+                                <span>لا توجد صورة</span>
                             @endif
                         </td>
                         <td>{{ $notification->title }}</td>
@@ -36,26 +36,26 @@
                         <td>{{ ucfirst($notification->status) }}</td>
                         <td>
                             <button class="btn btn-warning" data-bs-toggle="modal"
-                                data-bs-target="#editNotificationModal{{ $notification->id }}">Edit</button>
+                                data-bs-target="#editNotificationModal{{ $notification->id }}">تعديل</button>
                             <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST"
                                 style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-danger">حذف</button>
                             </form>
                         </td>
                     </tr>
 
-                    <!-- Edit Notification Modal -->
+                    <!-- تعديل إشعار Modal -->
                     <div class="modal fade" id="editNotificationModal{{ $notification->id }}" tabindex="-1"
                         aria-labelledby="editNotificationModalLabel{{ $notification->id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editNotificationModalLabel{{ $notification->id }}">Edit
-                                        Notification</h5>
+                                    <h5 class="modal-title" id="editNotificationModalLabel{{ $notification->id }}">تعديل
+                                        الإشعار</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                        aria-label="إغلاق"></button>
                                 </div>
                                 <div class="modal-body">
                                     <form action="{{ route('notifications.update', $notification->id) }}" method="POST"
@@ -63,7 +63,7 @@
                                         @csrf
                                         @method('PUT')
                                         <div class="mb-3">
-                                            <label for="image{{ $notification->id }}" class="form-label">Image</label>
+                                            <label for="image{{ $notification->id }}" class="form-label">الصورة</label>
                                             <input type="file" class="form-control" id="image{{ $notification->id }}"
                                                 name="image">
                                             @if ($notification->image)
@@ -72,26 +72,26 @@
                                             @endif
                                         </div>
                                         <div class="mb-3">
-                                            <label for="title{{ $notification->id }}" class="form-label">Title</label>
+                                            <label for="title{{ $notification->id }}" class="form-label">العنوان</label>
                                             <input type="text" class="form-control" id="title{{ $notification->id }}"
                                                 name="title" value="{{ $notification->title }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="body{{ $notification->id }}" class="form-label">Body</label>
+                                            <label for="body{{ $notification->id }}" class="form-label">المحتوى</label>
                                             <textarea class="form-control" id="body{{ $notification->id }}" name="body">{{ $notification->body }}</textarea>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="status{{ $notification->id }}" class="form-label">Status</label>
+                                            <label for="status{{ $notification->id }}" class="form-label">الحالة</label>
                                             <select class="form-control" id="status{{ $notification->id }}" name="status"
                                                 required>
                                                 <option value="read"
-                                                    {{ $notification->status == 'read' ? 'selected' : '' }}>Read</option>
+                                                    {{ $notification->status == 'read' ? 'selected' : '' }}>مقروء</option>
                                                 <option value="unread"
-                                                    {{ $notification->status == 'unread' ? 'selected' : '' }}>Unread
+                                                    {{ $notification->status == 'unread' ? 'selected' : '' }}>غير مقروء
                                                 </option>
                                             </select>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                                     </form>
                                 </div>
                             </div>
@@ -102,38 +102,38 @@
         </table>
     </div>
 
-    <!-- Add Notification Modal -->
+    <!-- إضافة إشعار Modal -->
     <div class="modal fade" id="addNotificationModal" tabindex="-1" aria-labelledby="addNotificationModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addNotificationModalLabel">Create New Notification</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="addNotificationModalLabel">إنشاء إشعار جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('notifications.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="image" class="form-label">Image</label>
+                            <label for="image" class="form-label">الصورة</label>
                             <input type="file" class="form-control" id="image" name="image">
                         </div>
                         <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
+                            <label for="title" class="form-label">العنوان</label>
                             <input type="text" class="form-control" id="title" name="title" required>
                         </div>
                         <div class="mb-3">
-                            <label for="body" class="form-label">Body</label>
+                            <label for="body" class="form-label">المحتوى</label>
                             <textarea class="form-control" id="body" name="body"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
+                            <label for="status" class="form-label">الحالة</label>
                             <select class="form-control" id="status" name="status" required>
-                                <option value="read">Read</option>
-                                <option value="unread">Unread</option>
+                                <option value="read">مقروء</option>
+                                <option value="unread">غير مقروء</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">إنشاء</button>
                     </form>
                 </div>
             </div>

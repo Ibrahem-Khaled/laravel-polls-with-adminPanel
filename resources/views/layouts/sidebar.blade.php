@@ -6,7 +6,7 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="{{ route('home') }}">
             <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">{{ config('app.name') }}</span>
+            <span class="ms-1 font-weight-bold text-white">App Nest</span>
         </a>
     </div>
     <hr class="horizontal light mt-0">
@@ -40,6 +40,12 @@
                 <a class="nav-link text-white" href="{{ route('notifications.index') }}">
                     <i class="fas fa-bell me-2"></i>
                     <span class="nav-link-text ms-1">إدارة الاشعارات</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{{ route('userBleowLimit') }}">
+                    <i class="fas fa-dollar-sign me-2"></i>
+                    <span class="nav-link-text ms-1">ادارة الدفعات</span>
                 </a>
             </li>
         </ul>
