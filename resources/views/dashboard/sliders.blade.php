@@ -31,7 +31,7 @@
                         <td>
                             <button class="btn btn-warning" data-bs-toggle="modal"
                                 data-bs-target="#editSlideModal{{ $slide->id }}">تعديل</button>
-                            <form action="{{ route('sliders.destroy', $slide->id) }}" method="POST"
+                            <form action="{{ route('slide.delete', $slide->id) }}" method="POST"
                                 style="display:inline;">
                                 @csrf
                                 @method('DELETE')

@@ -27,7 +27,7 @@ Route::group([], function () {
     //this route user
     Route::resource('users', UserController::class);
     Route::get('users/bleow/limit', [UserController::class, 'userBleowLimit'])->name('userBleowLimit');
-    
+
     //this route poll
     Route::resource('polls', PollController::class);
 
@@ -40,6 +40,7 @@ Route::group([], function () {
 
     //this route sliders
     Route::resource('sliders', SlideShowController::class);
+    Route::delete('slide/delete/{id}', [SlideShowController::class, 'destroy'])->name('slide.delete');
 
     //this route notification
     Route::resource('notifications', notifcationController::class);
