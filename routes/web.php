@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\dashboard\notifcationController;
 use App\Http\Controllers\dashboard\OptionController;
+use App\Http\Controllers\dashboard\PaymentWithContactUsController;
 use App\Http\Controllers\dashboard\PollController;
 use App\Http\Controllers\dashboard\QuestionController;
 use App\Http\Controllers\dashboard\SlideShowController;
@@ -26,7 +27,6 @@ Route::group([], function () {
 
     //this route user
     Route::resource('users', UserController::class);
-    Route::get('users/bleow/limit', [UserController::class, 'userBleowLimit'])->name('userBleowLimit');
 
     //this route poll
     Route::resource('polls', PollController::class);
@@ -45,5 +45,9 @@ Route::group([], function () {
     //this route notification
     Route::resource('notifications', notifcationController::class);
 
+    //this route payment and contact us
+    Route::get('contact-us', [PaymentWithContactUsController::class, 'contactUs'])->name('contact-us');
+    Route::get('payment', [PaymentWithContactUsController::class, 'payment'])->name('payment');
+    Route::patch('payment/update/{id}', [PaymentWithContactUsController::class, 'updateStatusPayment'])->name('payment.update');
 
 });

@@ -99,6 +99,38 @@ class PollsController extends Controller
         ], 200);
     }
 
+    public function pollWithUserAnswers($pollId)
+    {
+        $user = auth()->guard('api')->user();
+        $poll = Poll::with(['questions.options'])->find($pollId);
+
+        if (!$poll) {
+            return response()->json(['error' => 'الاستطلاع غير موجود.'], 404);
+        }
+
+        $userAnswers = $user->answers()
+            ->whereIn('option_id', $poll->questions->pluck('options.*.id')->flatten()->toArray())
+            ->get();
+
+        $questionsWithUserAnswers = $poll->questions->map(function ($question) use ($userAnswers) {
+            $userAnswer = $userAnswers->firstWhere('question_id', $question->id);
+
+            return $userAnswer ? [
+                'id' => $question->id,
+                'question' => $question->question,
+                'user_answer' => [
+                    'option_id' => $userAnswer->id,
+                    'option_text' => $userAnswer->option,
+                ]
+            ] : null;
+        })->filter()->values(); // إزالة الأسئلة التي لم يتم الإجابة عليها وإعادة الفهرسة
+
+        return response()->json([
+            'poll' => $poll->title,
+            'questions' => $questionsWithUserAnswers,
+        ], 200);
+    }
+
     public function setUserAnswers(Request $request, $pollId)
     {
         $user = auth()->guard('api')->user();

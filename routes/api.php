@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\HomeController;
+use App\Http\Controllers\api\PaymentWithContactUsController;
 use App\Http\Controllers\api\PollsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +33,15 @@ Route::group(['middleware' => ['apiAuth']], function () {
     Route::get('polls', [PollsController::class, 'polls']);
     Route::get('completePolls', [PollsController::class, 'completePolls']);
     Route::get('poll/{pollId}', [PollsController::class, 'poll']);
+    Route::get('pollWithUserAnswers/{pollId}', [PollsController::class, 'pollWithUserAnswers']);
     Route::post('poll/{pollId}', [PollsController::class, 'setUserAnswers']);
     Route::get('checkUserAnswered/{pollId}', [PollsController::class, 'checkUserAnswered']);
+
+    //this routes contact us  and payemnt
+    Route::post('contact-us', [PaymentWithContactUsController::class, 'storeContactUs']);
+
+    // payment
+    Route::get('show-payment', [PaymentWithContactUsController::class, 'payment']);
+    Route::post('payment/store', [PaymentWithContactUsController::class, 'storePayment']);
 });
 

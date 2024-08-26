@@ -102,12 +102,4 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User deleted successfully.');
     }
 
-    public function userBleowLimit()
-    {
-        $users = User::where('balance', '>', 200)
-            ->Where('role', 'user')
-            ->Where('status', 'active')
-            ->paginate(10);
-        return view('dashboard.users.user-below-limit', compact('users'));
-    }
 }

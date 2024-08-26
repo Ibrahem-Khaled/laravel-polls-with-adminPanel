@@ -43,9 +43,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="{{ route('userBleowLimit') }}">
+                <a class="nav-link text-white" href="{{ route('payment') }}">
                     <i class="fas fa-dollar-sign me-2"></i>
                     <span class="nav-link-text ms-1">ادارة الدفعات</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{{ route('contact-us') }}">
+                    <i class="fas fa-envelope me-2"></i>
+                    <span class="nav-link-text ms-1">ادارة الدعم الفني</span>
                 </a>
             </li>
         </ul>
