@@ -77,16 +77,11 @@ class AuthController extends Controller
             }
             $user->identity = $request->file('identity')->store('identities', 'public');
         }
+        $dataToUpdate = array_filter($request->only(['name', 'phone', 'email', 'address', 'description', 'image', 'identity']), function ($value) {
+            return $value !== null;
+        });
 
-        $user->update([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'image' => $user->image,
-            'identity' => $user->identity,
-            'address' => $request->address,
-            'description' => $request->description,
-        ]);
+        $user->update($dataToUpdate);
 
         if ($request->filled('expo_push_token')) {
             userPushToken::updateOrCreate(
@@ -94,6 +89,7 @@ class AuthController extends Controller
                 ['expo_push_token' => $request->expo_push_token]
             );
         }
+
         return response()->json($user, 200);
     }
 
