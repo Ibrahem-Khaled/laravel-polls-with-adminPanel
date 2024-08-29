@@ -4,9 +4,11 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\userPushToken;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -55,14 +57,43 @@ class AuthController extends Controller
 
     public function update(Request $request)
     {
+        $user = auth()->guard('api')->user();
         $request->validate([
             'name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:8',
+            'expo_push_token' => 'nullable|string',
         ]);
 
-        $user = Auth::user();
-        $user->update($request->all());
+        if ($request->hasFile('image')) {
+            if ($user->image) {
+                Storage::disk('public')->delete($user->image);
+            }
+            $user->image = $request->file('image')->store('images', 'public');
+        }
+
+        if ($request->hasFile('identity')) {
+            if ($user->identity) {
+                Storage::disk('public')->delete($user->identity);
+            }
+            $user->identity = $request->file('identity')->store('identities', 'public');
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'image' => $user->image,
+            'identity' => $user->identity,
+            'address' => $request->address,
+            'description' => $request->description,
+        ]);
+
+        if ($request->filled('expo_push_token')) {
+            userPushToken::updateOrCreate(
+                ['user_id' => $user->id],
+                ['expo_push_token' => $request->expo_push_token]
+            );
+        }
         return response()->json($user, 200);
     }
 

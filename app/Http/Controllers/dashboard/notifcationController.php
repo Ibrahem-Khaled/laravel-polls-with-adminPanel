@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\userPushToken;
+use App\Notifications\UserNotification;
 use Illuminate\Http\Request;
-use App\Models\Notifcation as Notification;
+use App\Models\Notifcation as NotificationModal;
+use Illuminate\Support\Facades\Notification;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class notifcationController extends Controller
 {
     public function index()
     {
-        $notifications = Notification::all();
+        $notifications = NotificationModal::all();
         return view('dashboard.notifications', compact('notifications'));
     }
 
@@ -25,17 +30,24 @@ class notifcationController extends Controller
 
         $imagePath = $request->hasFile('image') ? $request->file('image')->store('notifications', 'public') : null;
 
-        Notification::create([
+        $notification = NotificationModal::create([
             'title' => $request->title,
             'body' => $request->body,
             'image' => $imagePath,
             'status' => $request->status,
         ]);
 
-        return redirect()->route('notifications.index')->with('success', 'Notification created successfully.');
+        $expoPushTokens = UserPushToken::pluck('expo_push_token')->toArray();
+
+        // إرسال الإشعارات على مجموعات صغيرة
+        foreach (array_chunk($expoPushTokens, 100) as $tokensChunk) {
+            Notification::send(null, new UserNotification($request->title, $request->body, $tokensChunk));
+        }
+
+        return redirect()->route('notifications.index')->with('success', 'Notification created and sent successfully.');
     }
 
-    public function update(Request $request, Notification $notification)
+    public function update(Request $request, NotificationModal $notification)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -60,10 +72,16 @@ class notifcationController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('notifications.index')->with('success', 'Notification updated successfully.');
+        $expoPushTokens = userPushToken::pluck('expo_push_token')->toArray();
+
+        foreach (array_chunk($expoPushTokens, 100) as $tokensChunk) {
+            Notification::send(null, new UserNotification($request->title, $request->body, $tokensChunk));
+        }
+
+        return redirect()->route('notifications.index')->with('success', 'Notification updated and sent successfully.');
     }
 
-    public function destroy(Notification $notification)
+    public function destroy(NotificationModal $notification)
     {
         if ($notification->image) {
             Storage::disk('public')->delete($notification->image);

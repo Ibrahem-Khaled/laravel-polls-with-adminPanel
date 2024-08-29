@@ -39,6 +39,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Payment::class);
     }
 
+    public function userExpoToken()
+    {
+        return $this->hasOne(userPushToken::class);
+    }
+
 
     /////////////////////////////////////////////////////////////
     public function getJWTIdentifier()
