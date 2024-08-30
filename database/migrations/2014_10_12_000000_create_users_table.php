@@ -30,19 +30,22 @@ return new class extends Migration {
         });
 
         DB::table('users')->insert([
-            'name' => 'admin',
-            'phone' => '1234567890',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('12345678'),
-            'role' => 'admin',
-            'is_verified' => 'verified',
-        ], [
-            'name' => 'Noor qnebi',
-            'phone' => '0503889420',
-            'email' => 'noorqnebi@gmail.com	',
-            'password' => bcrypt('12345678'),
-            'role' => 'company',
-            'is_verified' => 'verified',
+            [
+                'name' => 'admin',
+                'phone' => '1234567890',
+                'email' => 'admin@admin.com',
+                'password' => bcrypt('12345678'),
+                'role' => 'admin',
+                'is_verified' => 'verified',
+            ],
+            [
+                'name' => 'Noor qnebi',
+                'phone' => '0503889420',
+                'email' => 'noorqnebi@gmail.com',
+                'password' => bcrypt('12345678'),
+                'role' => 'company',
+                'is_verified' => 'verified',
+            ],
         ]);
     }
 
