@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\dashboard\notifcationController;
 use App\Http\Controllers\dashboard\OptionController;
 use App\Http\Controllers\dashboard\PaymentWithContactUsController;
@@ -21,9 +22,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [mainController::class, 'home'])->name('home');
 
-Route::group([], function () {
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'customLogin'])->name('customLogin');
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('register', [AuthController::class, 'customRegister'])->name('customRegister');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('profile', [AuthController::class, 'profile'])->name('proflie')->middleware('auth');
+Route::post('/profile', [AuthController::class, 'update'])->name('profile.update');
+Route::get('forget-password', [AuthController::class, 'forgetPassword'])->name('forgetPassword');
+Route::post('resetPassword', [AuthController::class, 'resetPassword'])->name('resetPassword');
+
+
+Route::get('/', function () {
+    return redirect()->route('home');
+});
+
+Route::group(['middleware' => ['auth', 'adminCheck'], 'prefix' => 'dashboard'], function () {
+
+    //this route dashboard
+    Route::get('/', [mainController::class, 'home'])->name('home');
 
     //this route user
     Route::resource('users', UserController::class);
