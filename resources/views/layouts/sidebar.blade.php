@@ -54,6 +54,12 @@
                     <span class="nav-link-text ms-1">ادارة الدعم الفني</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{{ route('profile') }}">
+                    <i class="fas fa-envelope me-2"></i>
+                    <span class="nav-link-text ms-1">الصفحة الشخصية</span>
+                </a>
+            </li>
         </ul>
     </div>
 </aside>
