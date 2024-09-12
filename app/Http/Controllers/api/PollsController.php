@@ -44,7 +44,11 @@ class PollsController extends Controller
     public function completePolls()
     {
         $user = auth()->guard('api')->user();
+
+        // تحميل العلاقات المتداخلة (الأسئلة والخيارات)
         $polls = Poll::with('questions.options')->get();
+
+        // فلترة الاستطلاعات المكتملة
         $completePolls = $polls->filter(function ($poll) use ($user) {
             $questions = $poll->questions;
             $questionCount = $questions->count();
@@ -59,8 +63,34 @@ class PollsController extends Controller
             return count($answeredQuestionIds) === $questionCount;
         });
 
-        return response()->json($completePolls, 200);
+        // تحويل الاستطلاعات المكتملة إلى مصفوفة قبل إرجاع الاستجابة
+        $completePollsArray = $completePolls->map(function ($poll) {
+            return [
+                'id' => $poll->id,
+                'title' => $poll->title,
+                'description' => $poll->description,
+                'image' => $poll->image,
+                'price' => $poll->price,
+                'status' => $poll->status,
+                'visibility' => $poll->visibility,
+                'questions' => $poll->questions->map(function ($question) {
+                    return [
+                        'id' => $question->id,
+                        'text' => $question->text,
+                        'options' => $question->options->map(function ($option) {
+                            return [
+                                'id' => $option->id,
+                                'text' => $option->text,
+                            ];
+                        }),
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json($completePollsArray, 200);
     }
+
 
     public function poll($pollId)
     {
