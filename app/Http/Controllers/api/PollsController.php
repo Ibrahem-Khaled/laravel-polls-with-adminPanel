@@ -45,25 +45,39 @@ class PollsController extends Controller
     {
         $user = auth()->guard('api')->user();
 
-        // تحميل العلاقات المتداخلة (الأسئلة والخيارات)
+        // تحميل الاستطلاعات مع الأسئلة والخيارات
         $polls = Poll::with('questions.options')->get();
+
+        // التحقق من أن هناك استطلاعات
+        if ($polls->isEmpty()) {
+            return response()->json(['error' => 'No polls found.'], 404);
+        }
 
         // فلترة الاستطلاعات المكتملة
         $completePolls = $polls->filter(function ($poll) use ($user) {
             $questions = $poll->questions;
             $questionCount = $questions->count();
+
+            // جلب معرفات الإجابات للمستخدم
             $answeredOptionIds = $user->answers()->pluck('option_id')->toArray();
 
+            // التحقق من معرفات الأسئلة التي تمت الإجابة عليها
             $answeredQuestionIds = Option::whereIn('id', $answeredOptionIds)
                 ->whereIn('question_id', $questions->pluck('id')->toArray())
                 ->pluck('question_id')
                 ->unique()
                 ->toArray();
 
+            // التحقق من عدد الأسئلة التي تمت الإجابة عليها
             return count($answeredQuestionIds) === $questionCount;
         });
 
-        // تحويل الاستطلاعات المكتملة إلى مصفوفة قبل إرجاع الاستجابة
+        // التحقق من وجود استطلاعات مكتملة
+        if ($completePolls->isEmpty()) {
+            return response()->json(['message' => 'No completed polls found.'], 200);
+        }
+
+        // تحويل الاستطلاعات المكتملة إلى مصفوفة JSON
         $completePollsArray = $completePolls->map(function ($poll) {
             return [
                 'id' => $poll->id,
@@ -88,7 +102,7 @@ class PollsController extends Controller
             ];
         });
 
-        return response()->json($completePollsArray->toArray(), 200);
+        return response()->json($completePollsArray, 200);
     }
 
 
