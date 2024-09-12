@@ -12,34 +12,34 @@ class PollsController extends Controller
     public function polls()
     {
         $user = auth()->guard('api')->user();
+
+        // جلب جميع الاستطلاعات مع الأسئلة والخيارات
         $polls = Poll::with(['questions.options'])->get();
 
+        // جلب معرفات الخيارات التي أجاب عليها المستخدم
         $answeredOptionIds = $user->answers()->pluck('option_id')->toArray();
 
-        $answeredPollIds = Option::whereIn('id', $answeredOptionIds)
-            ->with('question.poll')
-            ->get()
-            ->pluck('question.poll.id')
+        // جلب معرفات الأسئلة التي أجاب عليها المستخدم
+        $answeredQuestionIds = Option::whereIn('id', $answeredOptionIds)
+            ->pluck('question_id')
             ->unique()
             ->toArray();
 
-        $completedPollIds = array_filter($answeredPollIds, function ($pollId) use ($answeredOptionIds) {
-            $pollQuestionsCount = Poll::find($pollId)->questions()->count();
-            $answeredQuestionsCount = Option::whereIn('id', $answeredOptionIds)
-                ->whereHas('question', function ($query) use ($pollId) {
-                    $query->where('poll_id', $pollId);
-                })
-                ->count();
+        // تصفية الاستطلاعات التي لم يكمل المستخدم الإجابة على جميع أسئلتها
+        $unansweredPolls = $polls->filter(function ($poll) use ($answeredQuestionIds) {
+            $pollQuestionIds = $poll->questions->pluck('id')->toArray(); // جلب جميع معرفات الأسئلة في الاستطلاع
 
-            return $pollQuestionsCount === $answeredQuestionsCount;
+            // مقارنة عدد الأسئلة التي أجاب عليها المستخدم مع عدد الأسئلة في الاستطلاع
+            $answeredInPoll = array_intersect($pollQuestionIds, $answeredQuestionIds); // الأسئلة التي أجاب عليها المستخدم في هذا الاستطلاع
+
+            // إذا لم تكن جميع الأسئلة قد تمت الإجابة عليها، نرجع الاستطلاع
+            return count($answeredInPoll) < count($pollQuestionIds);
         });
 
-        $unansweredPolls = $polls->filter(function ($poll) use ($completedPollIds) {
-            return !in_array($poll->id, $completedPollIds);
-        });
-
+        // إرجاع الاستطلاعات غير المكتملة
         return response()->json($unansweredPolls, 200);
     }
+
 
     public function completePolls()
     {
