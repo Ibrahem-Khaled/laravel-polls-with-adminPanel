@@ -203,7 +203,7 @@ class PollsController extends Controller
         $user = auth()->guard('api')->user();
         $poll = Poll::find($pollId);
         if (!$poll) {
-            return response()->json(data: ['error' => 'Poll not found.'], status: 404);
+            return response()->json(['error' => 'Poll not found.'], 404);
         }
         $questions = $poll->questions;
         $questionCount = $questions->count();
