@@ -12,14 +12,10 @@ class PollsController extends Controller
     public function polls()
     {
         $user = auth()->guard('api')->user();
-
-        // جلب جميع الاستطلاعات مع الأسئلة والخيارات
         $polls = Poll::with(['questions.options'])->get();
 
-        // جلب معرفات الإجابات التي أجاب عليها المستخدم
         $answeredOptionIds = $user->answers()->pluck('option_id')->toArray();
 
-        // جلب معرفات الاستطلاعات التي أجاب المستخدم على أسئلتها
         $answeredPollIds = Option::whereIn('id', $answeredOptionIds)
             ->with('question.poll')
             ->get()
@@ -27,47 +23,23 @@ class PollsController extends Controller
             ->unique()
             ->toArray();
 
-        // تصفية الاستطلاعات التي لم يجب المستخدم عليها بالكامل
-        $unansweredPolls = $polls->filter(function ($poll) use ($answeredOptionIds) {
-            $pollQuestionsCount = $poll->questions()->count(); // عدد أسئلة الاستطلاع
+        $completedPollIds = array_filter($answeredPollIds, function ($pollId) use ($answeredOptionIds) {
+            $pollQuestionsCount = Poll::find($pollId)->questions()->count();
             $answeredQuestionsCount = Option::whereIn('id', $answeredOptionIds)
-                ->whereHas('question', function ($query) use ($poll) {
-                    $query->where('poll_id', $poll->id);
+                ->whereHas('question', function ($query) use ($pollId) {
+                    $query->where('poll_id', $pollId);
                 })
-                ->count(); // عدد الأسئلة التي أجاب عليها المستخدم في هذا الاستطلاع
+                ->count();
 
-            // نرجع الاستطلاعات التي لم يجب المستخدم على كل أسئلتها أو على أي منها
-            return $answeredQuestionsCount < $pollQuestionsCount;
+            return $pollQuestionsCount === $answeredQuestionsCount;
         });
 
-        // تحويل الاستطلاعات التي لم يتم الإجابة عليها إلى مصفوفة JSON
-        $unansweredPollsArray = $unansweredPolls->map(function ($poll) {
-            return [
-                'id' => $poll->id,
-                'title' => $poll->title,
-                'description' => $poll->description,
-                'image' => $poll->image,
-                'price' => $poll->price,
-                'status' => $poll->status,
-                'visibility' => $poll->visibility,
-                'questions' => $poll->questions->map(function ($question) {
-                    return [
-                        'id' => $question->id,
-                        'text' => $question->text,
-                        'options' => $question->options->map(function ($option) {
-                            return [
-                                'id' => $option->id,
-                                'text' => $option->text,
-                            ];
-                        }),
-                    ];
-                }),
-            ];
+        $unansweredPolls = $polls->filter(function ($poll) use ($completedPollIds) {
+            return !in_array($poll->id, $completedPollIds);
         });
 
-        return response()->json($unansweredPollsArray, 200);
+        return response()->json($unansweredPolls, 200);
     }
-
 
     public function completePolls()
     {
