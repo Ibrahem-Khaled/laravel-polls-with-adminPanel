@@ -135,23 +135,38 @@ class PollsController extends Controller
     {
         $user = auth()->guard('api')->user();
         $poll = Poll::find($pollId);
+
+        // التحقق من وجود الاستطلاع
         if (!$poll) {
             return response()->json(['error' => 'Poll not found.'], 404);
         }
 
         $answer = $request->input('answer');
         $option = Option::find($answer);
+
+        // التحقق من صحة الخيار وأنه متعلق بالاستطلاع
         if (!$option || $option->question->poll_id != $pollId) {
             return response()->json(['error' => 'Invalid option or poll ID.'], 400);
         }
-        $existingAnswer = $user->answers()->where('option_id', $answer)->first();
+
+        // التحقق من وجود إجابة سابقة
+        $existingAnswer = $user->answers()->where('option_id', $option->id)->first();
+
+        // إذا كانت هناك إجابة سابقة، نقوم بتحديثها
         if ($existingAnswer) {
-            return response()->json(['error' => 'You cannot answer the same question twice.'], 400);
+            // فك ارتباط الإجابة القديمة وربط الإجابة الجديدة
+            $user->answers()->detach($existingAnswer->id); // فك ارتباط الإجابة القديمة
+            $user->answers()->attach($answer); // ربط الإجابة الجديدة
+
+            return response()->json(['message' => 'Answer updated successfully.'], 200);
         }
+
+        // إذا لم تكن هناك إجابة سابقة، نقوم بحفظ الإجابة الجديدة
         $user->answers()->attach($answer);
 
-        return response()->json(['message' => 'Answers saved successfully.'], 200);
+        return response()->json(['message' => 'Answer saved successfully.'], 200);
     }
+
 
     public function checkUserAnswered($pollId)
     {
