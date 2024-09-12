@@ -178,7 +178,7 @@ class PollsController extends Controller
 
             return response()->json(['message' => 'All questions answered. Balance updated.', 'balance' => $user->balance], 200);
         }
-        return response()->json(['message' => 'Not all questions answered.'], 401);
+        return response()->json(['message' => 'Not all questions answered.'], 200);
     }
 
 
