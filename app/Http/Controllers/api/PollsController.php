@@ -88,7 +88,7 @@ class PollsController extends Controller
             ];
         });
 
-        return response()->json($completePollsArray, 200);
+        return response()->json($completePollsArray->toArray(), 200);
     }
 
 
