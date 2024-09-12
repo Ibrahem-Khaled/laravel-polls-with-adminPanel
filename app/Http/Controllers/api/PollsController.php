@@ -12,10 +12,14 @@ class PollsController extends Controller
     public function polls()
     {
         $user = auth()->guard('api')->user();
+
+        // جلب جميع الاستطلاعات مع الأسئلة والخيارات
         $polls = Poll::with(['questions.options'])->get();
 
+        // جلب معرفات الإجابات التي أجاب عليها المستخدم
         $answeredOptionIds = $user->answers()->pluck('option_id')->toArray();
 
+        // جلب معرفات الاستطلاعات التي أجاب المستخدم على أسئلتها
         $answeredPollIds = Option::whereIn('id', $answeredOptionIds)
             ->with('question.poll')
             ->get()
@@ -23,23 +27,47 @@ class PollsController extends Controller
             ->unique()
             ->toArray();
 
-        $completedPollIds = array_filter($answeredPollIds, function ($pollId) use ($answeredOptionIds) {
-            $pollQuestionsCount = Poll::find($pollId)->questions()->count();
+        // تصفية الاستطلاعات التي لم يجب المستخدم عليها بالكامل
+        $unansweredPolls = $polls->filter(function ($poll) use ($answeredOptionIds) {
+            $pollQuestionsCount = $poll->questions()->count(); // عدد أسئلة الاستطلاع
             $answeredQuestionsCount = Option::whereIn('id', $answeredOptionIds)
-                ->whereHas('question', function ($query) use ($pollId) {
-                    $query->where('poll_id', $pollId);
+                ->whereHas('question', function ($query) use ($poll) {
+                    $query->where('poll_id', $poll->id);
                 })
-                ->count();
+                ->count(); // عدد الأسئلة التي أجاب عليها المستخدم في هذا الاستطلاع
 
-            return $pollQuestionsCount === $answeredQuestionsCount;
+            // نرجع الاستطلاعات التي لم يجب المستخدم على كل أسئلتها أو على أي منها
+            return $answeredQuestionsCount < $pollQuestionsCount;
         });
 
-        $unansweredPolls = $polls->filter(function ($poll) use ($completedPollIds) {
-            return !in_array($poll->id, $completedPollIds);
+        // تحويل الاستطلاعات التي لم يتم الإجابة عليها إلى مصفوفة JSON
+        $unansweredPollsArray = $unansweredPolls->map(function ($poll) {
+            return [
+                'id' => $poll->id,
+                'title' => $poll->title,
+                'description' => $poll->description,
+                'image' => $poll->image,
+                'price' => $poll->price,
+                'status' => $poll->status,
+                'visibility' => $poll->visibility,
+                'questions' => $poll->questions->map(function ($question) {
+                    return [
+                        'id' => $question->id,
+                        'text' => $question->text,
+                        'options' => $question->options->map(function ($option) {
+                            return [
+                                'id' => $option->id,
+                                'text' => $option->text,
+                            ];
+                        }),
+                    ];
+                }),
+            ];
         });
 
-        return response()->json($unansweredPolls, 200);
+        return response()->json($unansweredPollsArray, 200);
     }
+
 
     public function completePolls()
     {
