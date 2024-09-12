@@ -158,7 +158,7 @@ class PollsController extends Controller
         $user = auth()->guard('api')->user();
         $poll = Poll::find($pollId);
         if (!$poll) {
-            return response()->json(['error' => 'Poll not found.'], 404);
+            return response()->json(data: ['error' => 'Poll not found.'], status: 404);
         }
         $questions = $poll->questions;
         $questionCount = $questions->count();
@@ -178,7 +178,7 @@ class PollsController extends Controller
 
             return response()->json(['message' => 'All questions answered. Balance updated.', 'balance' => $user->balance], 200);
         }
-        return response()->json(['message' => 'Not all questions answered.'], 200);
+        return response()->json(['message' => 'Not all questions answered.'], 401);
     }
 
 
