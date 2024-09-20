@@ -22,8 +22,13 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('update', [AuthController::class, 'update']);
 Route::delete('deleteAccount', [AuthController::class, 'deleteAccount']);
+Route::post('panUser', [AuthController::class, 'panUser']);
 Route::get('user', [AuthController::class, 'user']);
 Route::post('logout', [AuthController::class, 'logout']);
+
+route::get('canBan', function () {
+    return response()->json(true, 200);
+});
 
 Route::group(['middleware' => ['apiAuth']], function () {
     //this route get home

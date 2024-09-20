@@ -102,6 +102,13 @@ class AuthController extends Controller
         return response()->json(['error' => 'Unauthenticated.'], 401);
     }
 
+    public function panUser()
+    {
+        $user = auth()->guard('api')->user();
+        $user->update(['status' => 'inactive']);
+        return response()->json($user, 200);
+    }
+
     public function logout()
     {
         auth()->guard('api')->logout();
@@ -112,6 +119,6 @@ class AuthController extends Controller
     {
         $user = auth()->guard('api')->user();
         $user->delete();
-        return response()->json(['message' => 'Account deleted successfully.'], 200);
+        return response()->json(['message' => 'Successfully deleted user'], 200);
     }
 }
