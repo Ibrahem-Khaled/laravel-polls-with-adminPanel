@@ -27,7 +27,7 @@ Route::get('user', [AuthController::class, 'user']);
 Route::post('logout', [AuthController::class, 'logout']);
 
 route::get('canBan', function () {
-    return response()->json(true, 200);
+    return response()->json(false, 200);
 });
 
 Route::group(['middleware' => ['apiAuth']], function () {
