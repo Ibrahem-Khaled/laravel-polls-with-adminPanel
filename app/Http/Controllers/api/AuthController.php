@@ -107,4 +107,11 @@ class AuthController extends Controller
         auth()->guard('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
+
+    public function deleteAccount()
+    {
+        $user = auth()->guard('api')->user();
+        $user->delete();
+        return response()->json(['message' => 'Account deleted successfully.'], 200);
+    }
 }
