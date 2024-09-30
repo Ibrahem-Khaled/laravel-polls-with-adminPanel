@@ -118,6 +118,7 @@ class AuthController extends Controller
     public function deleteAccount()
     {
         $user = auth()->guard('api')->user();
+        $user->userExpoToken()->delete();
         $user->delete();
         return response()->json(['message' => 'Successfully deleted user'], 200);
     }

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('user_push_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('expo_push_token')->nullable();
             $table->timestamps();
         });

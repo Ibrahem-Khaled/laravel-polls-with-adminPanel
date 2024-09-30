@@ -43,7 +43,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(userPushToken::class);
     }
-
+ 
 
     /////////////////////////////////////////////////////////////
     public function getJWTIdentifier()
